@@ -1,5 +1,227 @@
-<ion-view view-title="{{document.title}}">
-  <ion-content>
-    <h1>{{document.title}}</h1>
+<ion-view view-title="{{document.title}}" hide-nav-bar="true">
+  <ion-content has-bouncing="false" padding="false" class="overflow-scroll" scrollbar-y="false">
+    <!--<h1>{{document.title}}</h1>-->
+    <!-- <iframe src="templates/frame.html" height="100%"></iframe> -->
+    <style type="text/css">
+			
+		html, body {
+		    margin: 0;
+		    height: 100%;
+		}
+
+		body {
+		    background-color: #333;
+		}
+
+		body.hide-overflow {
+		    overflow: hidden;
+		}
+
+		/* helpers */
+
+		.t {
+		    display: table;
+		    width: 100%;
+		    height: 100%;
+		}
+
+		.tc {
+		    display: table-cell;
+		    vertical-align: middle;
+		    text-align: center;
+		}
+
+		.rel {
+		    position: relative;
+		}
+
+		/* book */
+
+		.book {
+		    margin: 0 auto;
+		    width: 90%;
+		    height: 90%;
+		    -webkit-touch-callout: none;
+		    -webkit-user-select: none;
+		    -khtml-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    user-select: none;
+		}
+
+		.book .page {
+		    height: 100%;
+		}
+
+		.book .page img {
+		    max-width: 100%;
+		    height: 100%;
+		}
+
+		ion-content.overflow-scroll {
+			overflow-x: scroll; 
+			background-color: #333;
+		}
+
+		.float-button {
+		  -webkit-border-radius: 50%;
+		  -moz-border-radius: 50%;
+		  border-radius: 50%;
+		  width: 92px;
+		  padding: 20px;
+		  font-size: 40px;
+		  background: $warning;
+		  position: fixed;
+		  bottom: 0px; /* Adjust to where you want it */
+		  right: 0px; /* Adjust to where you want it */
+		  z-index: 9999;
+		 }
+
+		 .float-button .height_fix {
+		   margin-top: 100%;
+		 }
+
+		 .float-button .content {
+		   position: absolute;
+		   left: 0;
+		   top: 50%;
+		   height: 100%;
+		   width: 100%;
+		   text-align: center;
+		   margin-top: -20px; /* Note, this must be half the font size */
+		   color: $light;
+		 }
+
+		 .button-fab {
+		 	-webkit-border-radius: 50%;
+		  	-moz-border-radius: 50%;
+		  	border-radius: 50%;
+		 	margin-top: 0.6em;
+		 	min-height: 52px;
+		 	opacity: 0.5;
+		 	transform: translate3d(0%, 0px, 0px);
+		 }
+	</style>
+	
+	<div class="t">
+	    <div class="tc rel">
+	        <div class="book" id="book">
+	            <div class="page"><img src="img/pages/01.jpg" alt="" /></div>
+	            <div class="page"><img src="img/pages/02.jpg" alt="" /></div>
+	            <div class="page"><img src="img/pages/03.jpg" alt="" /></div>
+	            <div class="page"><img src="img/pages/04.jpg" alt="" /></div>
+	            <div class="page"><img src="img/pages/05.jpg" alt="" /></div>
+	            <div class="page"><img src="img/pages/06.jpg" alt="" /></div>
+	        </div>
+	    </div>
+	</div>
+	<script type="text/javascript">
+		/*
+		 * Turn.js responsive book
+		 */
+
+		/*globals window, document, $*/
+
+		(function () {
+		    'use strict';
+
+		    var module = {
+		        ratio: 1.38,
+		        init: function (id) {
+		            var me = this;
+
+		            // if older browser then don't run javascript
+		            if (document.addEventListener) {
+		                this.el = document.getElementById(id);
+		                this.resize();
+		                this.plugins();
+
+		                // on window resize, update the plugin size
+		                window.addEventListener('resize', function (e) {
+		                    var size = me.resize();
+		                    $(me.el).turn('size', size.width, size.height);
+		                });
+		            }
+		        },
+		        resize: function () {
+		            // reset the width and height to the css defaults
+		            this.el.style.width = '';
+		            this.el.style.height = '';
+
+		            var width = this.el.clientWidth,
+		                height = Math.round(width / this.ratio),
+		                padded = Math.round(document.body.clientHeight * 0.9);
+
+		            // if the height is too big for the window, constrain it
+		            if (height > padded) {
+		                height = padded;
+		                width = Math.round(height * this.ratio);
+		            }
+
+		            // set the width and height matching the aspect ratio
+		            this.el.style.width = width + 'px';
+		            this.el.style.height = height + 'px';
+
+		            return {
+		                width: width,
+		                height: height
+		            };
+		        },
+		        plugins: function () {
+		            // run the plugin
+		            $(this.el).turn({
+		                gradients: true,
+		                acceleration: true/*,
+		                when: {
+							doubleTap: function(event) {
+								var currentZoom = $("#book").turn("zoom");
+								if (currentZoom > 1) {
+									$("#book").turn("zoom", 1);
+								}
+								else {
+									$("#book").turn("zoom", 3);
+								}
+							}
+						}*/
+
+		            });
+		            // hide the body overflow
+		            document.body.className = 'hide-overflow';
+		        }
+		    };
+
+		    module.init('book');
+		}());
+
+		function zoomIn() {
+			var currentZoom = $("#book").turn("zoom");
+			if (currentZoom < 5) {
+				$("#book").turn("zoom", ++currentZoom);
+			}
+		}
+
+		function zoomOut() {
+			var currentZoom = $("#book").turn("zoom");
+			if (currentZoom > 1) {
+				$("#book").turn("zoom", --currentZoom);
+			}
+		}
+
+		$("#book").bind("zooming", function(event,  newZoomValue, currentZoomValue) {
+  			//if high zoom load high resolution image
+		});
+
+	</script>
   </ion-content>
+
+  <div class="float-button">
+     <span class="height-fix">
+       <button id="zoomin" onClick="zoomIn();" class="button button-fab button-fab-bottom-right fab-fixed button-assertive pane" nav-view="active">
+         <i class="icon ion-plus"></i>
+       </button>
+       <button id="zoomout" onClick="zoomOut();" class="button button-fab button-fab-bottom-right fab-fixed button-assertive pane" nav-view="active">
+         <i class="icon ion-minus"></i>
+       </button>
+     </span>
+   </div>
 </ion-view>
