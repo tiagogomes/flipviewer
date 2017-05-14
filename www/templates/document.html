@@ -106,15 +106,12 @@
 	<div class="t">
 	    <div class="tc rel">
 	        <div class="book" id="book">
-	            <div class="page"><img src="img/pages/01.jpg" alt="" /></div>
-	            <div class="page"><img src="img/pages/02.jpg" alt="" /></div>
-	            <div class="page"><img src="img/pages/03.jpg" alt="" /></div>
-	            <div class="page"><img src="img/pages/04.jpg" alt="" /></div>
-	            <div class="page"><img src="img/pages/05.jpg" alt="" /></div>
-	            <div class="page"><img src="img/pages/06.jpg" alt="" /></div>
+	        	<div ng-repeat="image in document.images" ng-bind-html="image" class="page">
+      			</div>
 	        </div>
 	    </div>
 	</div>
+	<div style="display:none;" id="ratio">{{document.ratio}}</div>
 	<script type="text/javascript">
 		/*
 		 * Turn.js responsive book
@@ -129,6 +126,12 @@
 		        ratio: 1.38,
 		        init: function (id) {
 		            var me = this;
+
+		            var ratio = document.getElementById("ratio").innerText;
+
+		            if (ratio !== undefined) {
+		            	me.ratio = ratio;
+		            }
 
 		            // if older browser then don't run javascript
 		            if (document.addEventListener) {
@@ -190,7 +193,7 @@
 		        }
 		    };
 
-		    module.init('book');
+		    setTimeout(function(){module.init('book')},0);
 		}());
 
 		function zoomIn() {

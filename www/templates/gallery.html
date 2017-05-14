@@ -2,6 +2,8 @@
   <ion-content>
     <ion-list>
       <ion-item ng-repeat="document in documents" href="#/app/gallery/{{document.id}}">
+      	<ion-thumbnail item-left ng-bind-html="document.thumb">
+	    </ion-thumbnail>
         {{document.title}}
       </ion-item>
     </ion-list>
